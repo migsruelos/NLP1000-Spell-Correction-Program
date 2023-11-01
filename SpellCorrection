@@ -1,0 +1,51 @@
+from collections import defaultdict
+import nltk
+from nltk.corpus import gutenberg
+from nltk.tokenize import word_tokenize
+from nltk.metrics import edit_distance
+
+# Error Model
+error_model = defaultdict(lambda: defaultdict(int))
+
+# Assuming you have a file "count_1edit.txt" formatted as described (w|c z) and populate the error model.
+
+with open("count_1edit.txt", "r") as file:
+    for line in file:
+        wrong, right, count = line.strip().split(' ')
+        error_model[wrong][right] = int(count)
+
+# Language Model
+nltk.download('gutenberg')
+corpus = gutenberg.words()
+vocab = set(corpus)
+word_count = len(corpus)
+word_frequency = nltk.FreqDist(corpus)
+
+# Spell Check Function
+def spell_check(word):
+    if word in vocab:
+        return f"No errors found in '{word}'"
+
+    candidates = {}
+    for w in vocab:
+        if abs(len(word) - len(w)) > 1:
+            continue
+
+        if edit_distance(word, w) == 1:
+            candidates[w] = edit_distance(word, w)
+
+    if not candidates:
+        return f"No suggestions found for '{word}'"
+
+    for candidate, edit_type in candidates.items():
+        # Implement probability calculations using error_model, word_frequency, and other parameters
+        # Calculate P(c), P(w|c), and P(c) * P(w|c) for each candidate
+
+    # Return the suggestion with the highest P(c) * P(w|c) value
+    best_suggestion = max(candidates, key=candidates.get)
+    return f"Suggested correction for '{word}': {best_suggestion}"
+
+# Example
+input_word = "mohter"
+result = spell_check(input_word)
+print(result)
