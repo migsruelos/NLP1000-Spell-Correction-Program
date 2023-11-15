@@ -23,14 +23,14 @@ while True:
         break
 print(f"Randomly selected word: {target_word}\n")
 
-# get similarity scores for the 10th, 50th, and 100th most similar words
+# output the similarity scores for the 10th, 100th, and 1000th most similar words
 similar_words_10th = get_similar_words(target_word, 10)[9]
-similar_words_50th = get_similar_words(target_word, 50)[49]
 similar_words_100th = get_similar_words(target_word, 100)[99]
+similar_words_1000th = get_similar_words(target_word, 1000)[999]
 
 print(f"Closest...\n10th - {similar_words_10th[0]} {similar_words_10th[1]} ")
-print(f"50th - {similar_words_50th[0]} {similar_words_50th[1]} ")
-print(f"100th - {similar_words_100th[0]} {similar_words_100th[1]} \n")
+print(f"100th - {similar_words_100th[0]} {similar_words_100th[1]} ")
+print(f"1000th - {similar_words_1000th[0]} {similar_words_1000th[1]} \n")
 
 # word guessing loop
 while True:
