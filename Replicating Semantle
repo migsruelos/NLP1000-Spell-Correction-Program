@@ -1,1 +1,47 @@
-#PA5
+import numpy as np
+from gensim.models import KeyedVectors
+from sklearn.metrics.pairwise import cosine_similarity
+
+# word vectors
+word_vectors = KeyedVectors.load_word2vec_format('wiki-news-300d-1M.vec')
+
+# get the n most similar words
+def get_similar_words(target_word, n):
+    similarities = word_vectors.most_similar(target_word, topn=n)
+    return similarities
+
+# calculate cosine similarity between two words
+def calculate_similarity(word1, word2):
+    vector1 = word_vectors[word1].reshape(1, -1)
+    vector2 = word_vectors[word2].reshape(1, -1)
+    return cosine_similarity(vector1, vector2)[0, 0]
+
+# select a random word
+while True:
+    target_word = np.random.choice(word_vectors.index_to_key)
+    if target_word in word_vectors:
+        break
+print(f"Randomly selected word: {target_word}\n")
+
+# get similarity scores for the 10th, 50th, and 100th most similar words
+similar_words_10th = get_similar_words(target_word, 10)[9]
+similar_words_50th = get_similar_words(target_word, 50)[49]
+similar_words_100th = get_similar_words(target_word, 100)[99]
+
+print(f"Closest...\n10th - {similar_words_10th[0]} {similar_words_10th[1]} ")
+print(f"50th - {similar_words_50th[0]} {similar_words_50th[1]} ")
+print(f"100th - {similar_words_100th[0]} {similar_words_100th[1]} \n")
+
+# word guessing loop
+while True:
+    user_guess = input("Your guess: ").lower()
+
+    if user_guess == target_word.lower():
+        print(f"{target_word} : 1.0")
+        print("Great job on guessing the word!")
+        break
+    elif user_guess in word_vectors:
+        similarity_score = calculate_similarity(user_guess, target_word)
+        print(f"{user_guess} : {similarity_score}")
+    else:
+        print(f"Word not recognized in the resource.")
